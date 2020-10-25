@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+  <script src="https://kit.fontawesome.com/4c30f60dea.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/layout.css') }}">
+  <title></title>
+  {{ moment.include_jquery() }}
+  {{ moment.include_moment() }}
+</head>
+<body>
+  {% set active_page = active_page|default("home") %}
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col p-5">
+        {% if current_user.is_authenticated %}
+          {% if active_page == "home" %}
+            <a class="btn btn-primary btn-block" href="{{ url_for('users.user_profile', user_id=current_user.id) }}" role="button">My Profile</a>
+          {% else %}
+            <a class="btn btn-primary btn-block" href="{{ url_for('main.home') }}" role="button">Home</a>
+          {% endif %}
+          <a class="btn btn-outline-light btn-block" href="{{ url_for('users.notifs') }}">Notfications<span class="badge" id="notif-count">({{ current_user.new_notifs() }})</span></a>
+          <a class="btn btn-outline-light btn-block" href="{{ url_for('users.messages') }}">Messages<span class="badge" id="message-count">({{ current_user.new_messages() }})</span></a>
+          <a class="btn btn-outline-light btn-block" href="{{ url_for('users.user_setting') }}" role="button">Settings</a>
+        {% endif %}
+        <a class="btn btn-outline-light btn-block" href="#" role="button">Explore</a>
+      </div>
+      <div class="col-6 p-4">
+        <div class="flashed-messages">
+          {% if current_user.is_authenticated %}
+          {% with tasks = current_user.get_tasks_in_progress() %}
+          {% if tasks %}
+            {% for task in tasks %}
+            <div class="alert alert-success text-center" role="alert">
+             {{ task.description }}
+             <span id="{{ task.id }}-progress">{{ task.get_progress() }}%</span>
+            </div>
+            {% endfor %}
+          {% endif %}
+          {% endwith %}
+          {% endif %}
+
+          {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+              {% for category, message in messages %}
+                <div class="alert alert-{{ category }} text-center">
+                  {{ message }}
+                </div>
+              {% endfor %}
+            {% endif %}
+          {% endwith %}
+        </div>
+        {% block profile %}
+        {% endblock profile %}
+
+        {% if showCreateTweet and current_user.is_authenticated %}
+        <textarea class="form-control" id="create-tweet-textarea" rows="2" placeholder="Create a tweet"></textarea>
+        {% endif %}
+
+        <div class="main-content">
+          {% block stickytweets %}
+          {% endblock stickytweets %}
+
+          {% block tweets %}
+          {% endblock tweets %}
+
+          {% block maincontent %}
+          {% endblock maincontent %}
+        </div>
+      </div>
+      <div class="col p-5">
+        {% if g.search_form %}
+        <form id="searchform" class="form-inline search flex-nowrap mx-0 mx-lg-auto" action="/search" method="get">
+        {{ g.search_form.q(id="search-query", aria_label="Search", class="form-control w-100 secondary-bg-color", autocomplete="off", placeholder="Search") }}
+        <span class="input-group-append">
+        <span class="input-group-text border-0 bg-transparent" style="margin-left: -2.5rem;"
+          onclick="if (!(document.getElementById('search-query').value)) return false; document.getElementById('searchform').submit()">
+        <i class="fa fa-search" aria-hidden="true"></i>
+        </span>
+        </span>
+        </form>
+        {% endif %}
+        <div class="mt-5">
+          {% if not current_user.is_authenticated %}
+            <a class="btn btn-outline-primary btn-block" href="{{ url_for('users.login') }}">Login</a>
+            <a class="btn btn-outline-light btn-block" href="{{ url_for('users.signup') }}">Signup</a>
+          {% else %}
+            <a class="btn btn-outline-light btn-block" href="{{ url_for('users.logout') }}">Logout</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% block includes %}
+  {% endblock includes %}
+
+  <script type="text/javascript">
+    $(function () {
+      $('[data-toggle="popover"]').popover();
+    });
+
+    function set_message_count(n) {
+      element = document.querySelector('#message-count');
+      element.innerText = '(' + n + ')';
+    }
+
+    function set_notif_count(n) {
+      element = document.querySelector('#notif-count');
+      element.innerText = '(' + n + ')';
+    }
+
+    function set_task_progress(task_id, progress) {
+      try {
+        element = document.getElementById(task_id + '-progress');
+        element.innerText = progress + '%';
+      }
+      catch(err) {
+        ;
+      }
+    }
+
+    {% if current_user.is_authenticated %}
+    let since = 0;
+    setInterval(function() {
+      fetch("{{ url_for('users.notifications') }}?since="+since)
+      .then(response => response.json())
+      .then(notifications => {
+        for (let i = 0; i < notifications.length; i++) {
+          switch(notifications[i].name) {
+            case 'unread_message_count':
+              set_message_count(notifications[i].data);
+              break;
+            case 'unread_notifs_count':
+              set_notif_count(notifications[i].data);
+              break;
+            case 'task_progress':
+              set_task_progress(
+                notifications[i].data.task_id,
+                notifications[i].data.progress);
+              break;
+          }
+          since = notifications[i].timestamp;
+        }
+      })
+    }, 10000)
+    {% endif %}
+  </script>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+</body>
+</html>

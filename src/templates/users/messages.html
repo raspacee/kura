@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+
+{% set active_page = "messages" %}
+
+{% block maincontent %}
+    <h1 class="text-white">Messages</h1>
+    {% for message in messages %}
+        <div class="text-white">
+            <p>Sent by - {{ message.sender }}</p>
+            <p>{{ message.body }}</p>
+        </div>
+    {% endfor %}
+{% endblock maincontent %}

@@ -1,0 +1,163 @@
+.main-content {
+    min-height: 100vh;
+}
+
+#follow-btn {
+    width: 150px;
+}
+
+.container-fluid, .main-content, .card-body {
+    background-color: #15202B;
+}
+
+.main-content {
+    padding: 0;
+}
+
+.btn-round {
+    padding: 6px 15px;
+    border-radius: 20px;
+}
+
+.card {
+    cursor: pointer;
+    box-sizing: border-box;
+    border: 0;
+    border-width: thin;
+    background: transparent;
+    border-bottom: 2px solid #38444D;
+}
+
+.tweet-card:hover {
+    background-color: #192734;
+}
+
+.card-body span, .card-body a {
+    font-size: 18px;
+}
+
+.card-body-text {
+    margin-left: 12%;
+}
+
+.secondary-bg-color{
+    background: #253341;
+}
+
+.col, .col-6 {
+    border: 1px solid black;
+}
+
+.circle-btn {
+    border-radius: 16px;
+}
+
+.image-profile {
+    width: 130px;
+    height: 120px;
+    border-radius: 50%;
+    margin-top: 50px;
+}
+
+.tweet-profile {
+    width: 60px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+.inline-block {
+    display: inline-block;
+}
+
+.border-bottom {
+    border-bottom: 2px solid #38444D;
+}
+
+.profile-link {
+    color: white;
+}
+
+.tweet-like-emoji {
+    width: 23px;
+    transition: .2s ease-in-out;
+}
+
+.tweet-bottom-info {
+    font-size: 16px;
+}
+
+.tweet-bottom-info:hover {
+    text-decoration: underline;
+    text-decoration-color: #38444D;
+}
+
+.tweet-like-emoji:hover {
+    -webkit-filter: drop-shadow(1px 1px 0 #1B85C8)
+                    drop-shadow(-1px 1px 0 #1B85C8)
+                    drop-shadow(1px -1px 0 #1B85C8)
+                    drop-shadow(-1px -1px 0 #1B85C8);
+    filter: drop-shadow(1px 1px 0 #1B85C8)
+            drop-shadow(-1px 1px 0 #1B85C8)
+            drop-shadow(1px -1px 0 #1B85C8)
+            drop-shadow(-1px -1px 0 #1B85C8);
+    transform: scale(1.2);
+}
+
+.tweet-arrow {
+    font-size: 30px;
+}
+
+/* search page */
+ /* Style the tab */
+.tab {
+  overflow: hidden;
+  border-bottom: 2px solid #38444D;
+  background-color: #15202B;
+}
+
+/* Style the buttons that are used to open the tab content */
+.tab button {
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: 0.3s;
+    padding: 14px 30px;
+    color: #7D8E9B;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+    background-color: #162D40;
+    color: #1DA1F2;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+    color: #1DA1F2;
+    border-bottom: 2px solid #1DA1F2;
+}
+
+/* Style the tab content */
+.tabcontent {
+  display: none;
+  padding: 6px 12px;
+  border-top: none;
+}
+
+/* error pages */
+.vertical-center {
+  min-height: 100%;  /* Fallback for browsers do NOT support vh unit */
+  min-height: 100vh; /* These two lines are counted as one :-)       */
+
+  display: flex;
+  align-items: center;
+}
+
+/* */
+.invalid-feedback {
+    display: block;
+    color: #ed2417;
+}

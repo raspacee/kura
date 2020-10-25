@@ -1,0 +1,7 @@
+**/__pycache__
+rq
+
+src/database.db
+venv/
+profile_pics/
+.env

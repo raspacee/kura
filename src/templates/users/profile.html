@@ -1,0 +1,89 @@
+{% extends "layout.html" %}
+
+{% set active_page = "profile" %}
+
+{% block profile %}
+<div class="card">
+  <img class="image-profile text-white" src="/static/profile_pics/{{ user.image_file }}" alt="Profile Image">
+  <div class="card-body">
+    <h5 class="card-title font-weight-bold text-white">{{ user.showname }}
+
+    {% if current_user.is_authenticated and current_user.id != user.id %}
+      {% if current_user.is_following(user) %}
+      <input data-userid="{{ user.id }}" type="submit" id="follow-btn" class="btn btn-outline-primary float-right btn-round" value="Unfollow">
+      {% else %}
+      <input data-userid="{{ user.id }}" type="submit" id="follow-btn" class="btn btn-outline-primary float-right btn-round" value="Follow">
+      {% endif %}
+    {% endif %}
+    </h5>
+    <h6 class="card-subtitle mb-2 text-muted">@{{ user.username }}</h6>
+    <p class="card-text text-white">{{ user.bio }}</p>
+    <p class="text-muted">&#128467;  Joined {{ moment(user.created_utc).format('LL') }}</p>
+    <span class="text-muted"><span class="text-white">{{ user.followed.count() }}</span> Following</span>
+    <span class="text-muted ml-3"><span class="text-white">{{ user.followers.count() }}</span> Followers</span>
+
+    {% if user != current_user %}
+    <div class="mt-3">
+      <a href="{{ url_for('users.send_message', recipient=user.username) }}">
+      <span data-container="body" data-toggle="popover" data-placement="top" data-content="Send a message" data-trigger="hover" style="font-size: 28px; color: #14abf6;">
+        <i class="fas fa-paper-plane"></i>
+      </span>
+      </a>
+    </div>
+    {% endif %}
+    {% if not current_user.get_task_in_progress('export_posts') and not current_user.email == '' and current_user == user %}
+    <div class="mt-3">
+      <a href="{{ url_for('users.export_posts') }}">
+      <span data-container="body" data-toggle="popover" data-placement="top" data-content="Export your tweets" data-trigger="hover" style="font-size: 28px; color: #0bd460;">
+        <i class="fas fa-file-export"></i>
+      </span>
+      </a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock profile %}
+
+{% block maincontent %}
+{% if stickytweets or tweets %}
+  {% for stickytweet in stickytweets %}
+    {% include "tweets/tweets.html" %}
+  {% endfor %}
+
+  {% for tweet in tweets %}
+    {% include "tweets/tweets.html" %}
+  {% endfor %}
+
+  <nav class="mt-3">
+    <ul class="pagination pagination-sm mb-0">
+      {% if prev_url %}
+        <li class="page-item">
+        <small><a class="page-link" href="{{ prev_url }}">Prev</a></small>
+        </li>
+      {% else %}
+        <li class="page-item disabled"><span class="page-link bg-transparent">Prev</span></li>
+      {% endif %}
+      {% if next_url %}
+        <li class="page-item">
+        <small><a class="page-link" href="{{ next_url }}">Next</a></small>
+        </li>
+      {% else %}
+        <li class="page-item disabled"><span class="page-link bg-transparent">Next</span></li>
+      {% endif %}
+    </ul>
+  </nav>
+{% else %}
+  <div class="text-center text-white px-3 mt-5 my-3">
+    <span class="fa-stack fa-2x text-muted mb-1">
+      <i class="far fa-times-circle"></i>
+    </span>
+    <h2 class="h5">User has not made any tweets yet!</h2>
+  </div>
+{% endif %}
+{% endblock maincontent %}
+
+{% block includes %}
+<script type="text/javascript" src="{{ url_for('static', filename='scripts/follow.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='scripts/like.js') }}"></script>
+<script type="text/javascript" defer src="{{ url_for('static', filename='scripts/sticky.js') }}"></script>
+{% endblock includes %}

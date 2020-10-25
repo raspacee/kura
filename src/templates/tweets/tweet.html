@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+{% set active_page = "tweet" %}
+
+{% block maincontent %}
+<div class="text-white border-bottom pb-3 font-weight-bold">
+    <span class="tweet-arrow">&#8592;</span> Tweet
+</div>
+<div class="card">
+  <div class="card-body tweet-card">
+    <img src="/static/profile_pics/{{ current_user.image_file }}" class="tweet-profile">
+    <div class="inline-block ml-2">
+    <h5 class="card-title text-white font-weight-bold"><a href="{{ url_for('users.user_profile', user_id=tweet.userid) }}" class="profile-link">{{ tweet.author.showname }}</a> <span class="card-subtitle mb-2 text-muted text-secondary font-weight-light">@{{ tweet.author.username }}
+    {% if tweet.is_edited %}
+    &middot edited
+    {% endif %}
+    </span>
+    {% if current_user.id == tweet.userid %}
+    <a class="btn btn-link" href="{{ url_for('tweets.tweet_edit', tweet_id=tweet.id) }}">Edit</a>
+    {% endif %}
+    {% if current_user.id == tweet.userid and tweet.stickied %}
+    <input id="sticky-btn" type="submit" class="btn btn-link" data-tweetid="{{ tweet.id }}" value="Unsticky">
+    {% elif current_user.id == tweet.userid and not tweet.stickied %}
+    <input id="sticky-btn" type="submit" class="btn btn-link" data-tweetid="{{ tweet.id }}" value="Sticky">
+    {% endif %}
+    {% if current_user.admin_level == 2 or current_user.admin_level == 3 %}
+    <input type="submit" class="btn btn-link" data-tweetid="{{ tweet.id }}" value="Ban">
+    {% endif %}
+    </h5>
+    </div>
+    <div class="card-body-text mt-3">
+    <p class="card-text text-white">{{ tweet.textbody }}</p>
+    <div class="mt-1 pb-2 text-muted border-bottom tweet-bottom-info">
+        {{ moment(tweet.created_utc).format('LLLL') }}
+    </div>
+    </div>
+  </div>
+</div>
+
+<div class="card mt-1 mb-3 pt-1 pb-2 text-white">
+    Comments
+</div>
+
+{% if showCreateComment and current_user.is_authenticated %}
+<textarea  onclick="location.href='{{ tweet.id }}/comment/create'" class="form-control" id="create-comment-textarea" rows="2" placeholder="Create a comment"></textarea>
+{% endif %}
+
+{% for comment in comments %}
+    {% include "tweets/comments.html" %}
+{% endfor %}
+{% endblock maincontent %}

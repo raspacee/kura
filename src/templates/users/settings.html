@@ -1,0 +1,60 @@
+{% extends "layout.html" %}
+{% block maincontent %}
+<form method="POST" enctype="multipart/form-data" action="" class="text-white">
+{{ form.hidden_tag() }}
+<div class="form-group">
+    <img src="/static/profile_pics/{{ user.image_file }}" class="image-profile">
+</div>
+<div class="form-group">
+  {{ form.picture.label() }}
+  {{ form.picture(class="form-control-file") }}
+  {% if form.picture.errors %}
+    <div class="invalid-feedback">
+      {% for error in form.picture.errors %}
+      <span>{{ error }}</span>
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>
+<div class="form-group">
+  {{ form.showname.label() }}
+  {{ form.showname(class="form-control") }}
+  {% if form.showname.errors %}
+    <div class="invalid-feedback">
+      {% for error in form.showname.errors %}
+      <span>{{ error }}</span>
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>
+<div class="form-group">
+  {{ form.email.label() }}
+  {{ form.email(class="form-control") }}
+  {% if form.email.errors %}
+    <div class="invalid-feedback">
+      {% for error in form.email.errors %}
+      <span>{{ error }}</span>
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>
+<div class="form-group">
+  {{ form.bio.label() }}
+  {{ form.bio(class="form-control") }}
+  {% if form.bio.errors %}
+    <div class="invalid-feedback">
+      {% for error in form.bio.errors %}
+      <span>{{ error }}</span>
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>
+<div class="form-check form-check-inline">
+  {{ form.filter_nsfw(class="form-check-input") }}
+  {{ form.filter_nsfw.label(class="form-check-label") }}
+</div>
+<div class="form-group mt-4">
+  {{ form.update(class="btn btn-outline-primary") }}
+</div>
+</form>
+{% endblock maincontent %}

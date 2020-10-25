@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+
+{% set active_page = "notifs" %}
+
+{% block maincontent %}
+    <h1 class="text-white">Notifications</h1>
+    {% for comment in comments %}
+        {% include "tweets/comments.html" %}
+    {% endfor %}
+{% endblock maincontent %}

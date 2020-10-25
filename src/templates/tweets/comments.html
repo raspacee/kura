@@ -1,0 +1,18 @@
+<div class="tweet-comments">
+    <div class="card">
+      <div class="card-body tweet-card">
+        <img src="/static/profile_pics/{{ comment.author.image_file }}" class="tweet-profile">
+        <div class="inline-block ml-2">
+        <h5 class="card-title text-white font-weight-bold"><a href="{{ url_for('users.user_profile', user_id=comment.commenter_id) }}" class="profile-link">{{ comment.author.showname }}</a> <span class="card-subtitle mb-2 text-muted text-secondary font-weight-light">@{{ comment.author.username }} &middot {{ moment(comment.created_utc).fromNow() }}
+        </span>
+        {% if current_user.id == comment.author.userid %}
+        <a class="btn btn-link" href="{{ url_for('tweets.tweet_edit', tweet_id=tweet.id) }}">Edit</a>
+        {% endif %}
+        </h5>
+        </div>
+        <div class="card-body-text">
+        <p class="card-text text-white">{{ comment.textbody }}</p>
+        </div>
+      </div>
+    </div>
+</div>

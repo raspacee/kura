@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% set page = "comment_create" %}
+{% block maincontent %}
+    <form method="POST" action="">
+      {{ form.hidden_tag() }}
+      <div class="form-group text-white">
+        {{ form.textbody.label() }}
+        {{ form.textbody(class="form-control secondary-bg-color") }}
+      </div>
+      <div class="form-group text-white">
+          {{ form.submit(class="btn btn-primary") }}
+      </div>
+    </form>
+{% endblock maincontent %}
