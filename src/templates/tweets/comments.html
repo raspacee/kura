@@ -12,6 +12,20 @@
         </div>
         <div class="card-body-text">
         <p class="card-text text-white">{{ comment.textbody }}</p>
+        <div class="mt-1 pb-2 text-muted border-bottom tweet-bottom-info">
+            <a href="{{ url_for('tweets.comment_reply', comment_id=comment.id) }}">
+                <i class="fas fa-reply" aria-hidden="true"></i>
+                <span class="ml-1 d-none d-md-inline-block">Reply</span>
+            </a>
+        </div>
+        <div>
+            {% if comment.replies.all() %}
+            <a href="{{ url_for('tweets.comment_replies', comment_id=comment.id) }}">
+                <i class="far fa-comment-dots"></i>
+                <span class="ml-1 d-md-inline-block">Show replies</span>
+            </a>
+            {% endif %}
+        </div>
         </div>
       </div>
     </div>

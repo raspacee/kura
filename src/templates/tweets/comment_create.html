@@ -3,6 +3,11 @@
 {% block maincontent %}
     <form method="POST" action="">
       {{ form.hidden_tag() }}
+      {% if is_reply %}
+      <div class="form-group text-white">
+        Reply to -
+      </div>
+      {% endif %}
       <div class="form-group text-white">
         {{ form.textbody.label() }}
         {{ form.textbody(class="form-control secondary-bg-color") }}

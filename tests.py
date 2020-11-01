@@ -3,7 +3,7 @@
 from datetime import datetime, timedelta
 import unittest
 from src import create_app
-from src.models import db, User, Tweet
+from src.models import db, User, Tweet, Comment
 
 app = create_app()
 app.app_context().push()

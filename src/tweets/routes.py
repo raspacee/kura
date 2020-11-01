@@ -23,7 +23,7 @@ def tweet_create():
 @login_required
 def tweet_show(tweet_id):
     tweet = Tweet.query.filter_by(id=tweet_id).first()
-    comments = tweet.comments.all()
+    comments = tweet.comments.filter(Comment.parent == None).all()
     return render_template('tweets/tweet.html', tweet=tweet, comments=comments, showCreateComment=True)
 
 @tweets.route("/tweet/<int:tweet_id>/edit", methods=['GET', 'POST'])
@@ -90,11 +90,32 @@ def comment_create(tweet_id):
     if not tweet:
         return redirect(url_for('main.home'))
     if form.validate_on_submit():
-        time = datetime.utcnow()
-        comment = Comment(textbody=form.textbody.data, tweetComment=tweet, author=current_user, recipient=tweet.author, created_utc=time)
-        db.session.add(comment)
+        comment = Comment(textbody=form.textbody.data, tweetComment=tweet, author=current_user, recipient=tweet.author)
+        comment.save()
         tweet.author.add_notification('unread_notifs_count', tweet.author.new_notifs())
         db.session.commit()
         return redirect(url_for('tweets.tweet_show', tweet_id=tweet_id))
     return render_template('tweets/comment_create.html', form=form)
 
+@tweets.route("/comment/<int:comment_id>/replies", methods=['GET'])
+@login_required
+def comment_replies(comment_id):
+    comment = Comment.query.filter_by(id=comment_id).first()
+    if not comment:
+        return redirect(url_for('main.home'))
+    return render_template('tweets/replies.html', comment=comment)
+
+@tweets.route("/comment/<int:comment_id>/reply", methods=['GET', 'POST'])
+@login_required
+def comment_reply(comment_id):
+    form = CreateCommentForm()
+    p_comment = Comment.query.filter_by(id=comment_id).first()
+    if not p_comment:
+        return redirect(url_for('main.home'))
+    if form.validate_on_submit():
+        comment = Comment(textbody=form.textbody.data, tweetComment=p_comment.tweetComment, author=current_user, recipient=p_comment.tweetComment.author, parent=p_comment)
+        comment.save()
+        p_comment.author.add_notification('unread_notifs_count', p_comment.author.new_notifs())
+        db.session.commit()
+        return redirect(url_for('tweets.tweet_show', tweet_id=p_comment.tweetComment.id))
+    return render_template('tweets/comment_create.html', form=form, is_reply=True)

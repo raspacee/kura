@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% set active_page = "replies" %}
+
+{% block maincontent %}
+    {% include "tweets/comments.html" %}
+    <div class="card mt-1 mb-3 pt-1 pb-2 text-white">
+        Replies
+    </div>
+    {% for comment in comment.replies.all() %}
+        {% include "tweets/comments.html" %}
+    {% endfor %}
+{% endblock maincontent %}

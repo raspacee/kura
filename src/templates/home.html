@@ -30,10 +30,20 @@
   {% if emptyTweets %}
   <p class="h4 text-white mt-5">Such Barren... Follow people to get more tweets</p>
   {% endif %}
-  {% for tweet in tweets %}
-    {% include "tweets/tweets.html" %}
-  {% endfor %}
-  {% include "pagination.html" %}
+  {% if tweets %}
+    {% for tweet in tweets %}
+      {% include "tweets/tweets.html" %}
+    {% endfor %}
+    {% include "pagination.html" %}
+  {% else %}
+    <div class="text-center text-white px-3 mt-5 my-3">
+      <span class="fa-stack fa-2x text-muted mb-4">
+        <i class="fas fa-people-arrows"></i>
+      </span>
+      <h2 class="h5">Your home page is barren</h2>
+      <p class="text-muted">Follow more people to see more posts!</p>
+    </div>
+  {% endif %}
 {% endif %}
 {% endblock tweets %}
 

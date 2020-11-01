@@ -212,12 +212,28 @@ class Like(db.Model):
         return '<Like {},{}>'.format(self.userid, self.tweetid)
 
 class Comment(db.Model):
+    _N = 6
+
     id = db.Column(db.Integer, primary_key=True)
     tweet_id = db.Column(db.Integer, db.ForeignKey('tweet.id'), nullable=False)
-    author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    commenter_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False) # author of post
+    commenter_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False) # author of comment
     textbody = db.Column(db.String(400), nullable=False)
     created_utc = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    path = db.Column(db.Text, index=True)
+    parent_id = db.Column(db.Integer, db.ForeignKey('comment.id'))
+    replies = db.relationship('Comment', backref=db.backref('parent', remote_side=[id]),
+        lazy='dynamic')
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+        prefix = self.parent.path + '.' if self.parent else ''
+        self.path = prefix + '{:0{}d}'.format(self.id, self._N)
+        db.session.commit()
+
+    def level(self):
+        return len(self.path)
 
     def __repr__(self):
         return '<Comment {}>'.format(self.id)
