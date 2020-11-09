@@ -197,6 +197,7 @@ class Tweet(SearchableMixin, db.Model):
     is_banned = db.Column(db.Boolean, default=False)
     is_nsfw = db.Column(db.Boolean, default=False)
     is_edited = db.Column(db.Boolean, default=False)
+    comment_path_counter = db.Column(db.Integer, default=1, autoincrement=True)
 
     likes = db.relationship('Like', backref='tweet', lazy='dynamic')
 
@@ -229,7 +230,8 @@ class Comment(db.Model):
         db.session.add(self)
         db.session.commit()
         prefix = self.parent.path + '.' if self.parent else ''
-        self.path = prefix + '{:0{}d}'.format(self.id, self._N)
+        self.tweetComment.comment_path_counter += 1
+        self.path = prefix + '{:0{}d}'.format(self.tweetComment.comment_path_counter, self._N)
         db.session.commit()
 
     def level(self):
