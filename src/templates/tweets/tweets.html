@@ -1,5 +1,5 @@
 <div class="card">
-  <div class="card-body tweet-card" onclick="location.href='/tweet/{{ tweet.id }}';">
+  <div class="card-body tweet-card">
     <img src="/static/profile_pics/{{ tweet.author.image_file }}" class="tweet-profile">
     <div class="inline-block ml-2">
         <h5 class="card-title text-white font-weight-bold"><a href="{{ url_for('users.user_profile', user_id=tweet.userid) }}" class="profile-link">{{ tweet.author.showname }}</a> <span class="card-subtitle mb-2 text-muted text-secondary font-weight-light">@{{ tweet.author.username }} &middot {{ moment(tweet.created_utc).fromNow() }}
@@ -16,11 +16,11 @@
         <a class="btn btn-link" href="{{ url_for('tweets.tweet_edit', tweet_id=tweet.id) }}">Edit</a>
         {% endif %}
         {% if current_user.id == tweet.userid and tweet.stickied %}
-        <a href="#" id="sticky-btn" type="submit" class="btn btn-link" data-tweetid="{{ tweet.id }}" value="Unsticky">Unsticky</a>
+        <input id="sticky-btn" type="submit" class="btn btn-link" data-tweetid="{{ tweet.id }}" value="Unsticky"/>
         {% elif current_user.id == tweet.userid and not tweet.stickied %}
-        <a href="#" id="sticky-btn" type="submit" class="btn btn-link" data-tweetid="{{ tweet.id }}" value="Sticky">Sticky</a>
+        <input id="sticky-btn" type="submit" class="btn btn-link" data-tweetid="{{ tweet.id }}" value="Sticky"/>
         {% endif %}
-    <div class="card-body-text">
+    <div class="card-body-text" onclick="location.href='/tweet/{{ tweet.id }}';">
         <p class="card-text text-white">{{ tweet.textbody }}</p>
     </div>
   </div>
