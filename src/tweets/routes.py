@@ -90,7 +90,7 @@ def comment_create(tweet_id):
     if not tweet:
         return redirect(url_for('main.home'))
     if form.validate_on_submit():
-        comment = Comment(textbody=form.textbody.data, tweetComment=tweet, author=current_user, recipient=tweet.author)
+        comment = Comment(textbody=form.textbody.data, tweet=tweet, author=current_user, recipient=tweet.author)
         comment.save()
         tweet.author.add_notification('unread_notifs_count', tweet.author.new_notifs())
         db.session.commit()
@@ -113,9 +113,9 @@ def comment_reply(comment_id):
     if not p_comment:
         return redirect(url_for('main.home'))
     if form.validate_on_submit():
-        comment = Comment(textbody=form.textbody.data, tweetComment=p_comment.tweetComment, author=current_user, recipient=p_comment.tweetComment.author, parent=p_comment)
+        comment = Comment(textbody=form.textbody.data, tweet=p_comment.tweet, author=current_user, recipient=p_comment.tweet.author, parent=p_comment)
         comment.save()
         p_comment.author.add_notification('unread_notifs_count', p_comment.author.new_notifs())
         db.session.commit()
-        return redirect(url_for('tweets.tweet_show', tweet_id=p_comment.tweetComment.id))
+        return redirect(url_for('tweets.tweet_show', tweet_id=p_comment.tweet.id))
     return render_template('tweets/comment_create.html', form=form, is_reply=True)

@@ -190,7 +190,7 @@ class Tweet(SearchableMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     textbody = db.Column(db.String(500), nullable=False)
     userid = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    comments = db.relationship('Comment', backref='tweetComment', lazy="dynamic")
+    comments = db.relationship('Comment', backref='tweet', lazy="dynamic")
     created_utc = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     edited_utc = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     stickied = db.Column(db.Boolean, default=False)
@@ -230,8 +230,8 @@ class Comment(db.Model):
         db.session.add(self)
         db.session.commit()
         prefix = self.parent.path + '.' if self.parent else ''
-        self.tweetComment.comment_path_counter += 1
-        self.path = prefix + '{:0{}d}'.format(self.tweetComment.comment_path_counter, self._N)
+        self.tweet.comment_path_counter += 1
+        self.path = prefix + '{:0{}d}'.format(self.tweet.comment_path_counter, self._N)
         db.session.commit()
 
     def level(self):
