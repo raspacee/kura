@@ -3,7 +3,7 @@ let stickyBtnAll = document.querySelectorAll('#sticky-btn');
 for (let i = 0; i < stickyBtnAll.length; i++) {
     stickyBtnAll[i].addEventListener('click', function(e){
         e.preventDefault();
-        postlocation = 'http://localhost:5000/tweet/sticky';
+        postlocation = '/tweet/sticky';
         let tweetid = e.target.dataset.tweetid;
         let data = { tweet_id: tweetid };
 

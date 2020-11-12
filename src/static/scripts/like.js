@@ -1,9 +1,8 @@
-
 const likeBtnAll = document.querySelectorAll('#like-btn');
 for (let i = 0; i < likeBtnAll.length; i++) {
     likeBtnAll[i].addEventListener('click', function(e) {
         e.preventDefault();
-        postlocation = 'http://localhost:5000/tweet/like';
+        postlocation = '/tweet/like';
         let tweetid = e.target.dataset.tweetid;
         let data = { tweet_id : tweetid };
 
