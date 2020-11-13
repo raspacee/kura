@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 141fec182b5b
+Revision ID: 400b5d89779c
 Revises: 
-Create Date: 2020-11-12 13:33:08.894052
+Create Date: 2020-11-13 12:17:25.594064
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '141fec182b5b'
+revision = '400b5d89779c'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -75,7 +75,8 @@ def upgrade():
     op.create_index(op.f('ix_task_name'), 'task', ['name'], unique=False)
     op.create_table('tweet',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('textbody', sa.String(length=500), nullable=False),
+    sa.Column('textbody_source', sa.String(length=500), nullable=False),
+    sa.Column('textbody_markdown', sa.Unicode(length=600), nullable=False),
     sa.Column('userid', sa.Integer(), nullable=False),
     sa.Column('created_utc', sa.DateTime(), nullable=False),
     sa.Column('edited_utc', sa.DateTime(), nullable=False),
