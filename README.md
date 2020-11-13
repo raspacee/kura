@@ -1,6 +1,6 @@
 # Kura
 
-** Status: ** Currently in development
+**Status:** Currently in development
 
 Kura aims to be a better alternative for twitter. Unlike twitter, Kura doesn't try to enforce a specific political agenda and doesn't censor people.
 
@@ -10,7 +10,9 @@ TODO
 
 ## Installation
 
-TODO
+###[Linux](https://github.com/volatileColors/kura/wiki/linux-installation)
+###[Windows](https://github.com/volatileColors/kura/wiki/windows-installation)
+###[Mac](https://github.com/volatileColors/kura/wiki/mac-installation)
 
 ## Contributing
 
@@ -25,6 +27,6 @@ TODO
 
 ## Authors
 
-** Bijay Khapung **
+**Bijay Khapung**
 
 If you have any queries about the code contact me at `volatilecolors@gmail.com` or if you have discord send a DM to `twentyone#3934`
