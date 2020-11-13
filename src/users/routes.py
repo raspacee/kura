@@ -63,8 +63,6 @@ def user_profile(user_id):
     stickytweets = user.tweets.filter_by(stickied=True).order_by(Tweet.created_utc.desc())
     if current_user.filter_nsfw:
         stickytweets = stickytweets.filter_by(is_nsfw=False)
-    if tweets.items or stickytweets.all():
-        print(tweets.items, stickytweets.all())
     return render_template('users/profile.html', user=user, tweets=tweets.items, next_url=next_url, prev_url=prev_url, stickytweets=stickytweets.all())
 
 @users.route("/user/settings", methods=['GET', 'POST'])

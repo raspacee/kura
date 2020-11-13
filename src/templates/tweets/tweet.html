@@ -28,7 +28,7 @@
     </h5>
     </div>
     <div class="card-body-text mt-3">
-    <p class="card-text text-white">{{ tweet.textbody }}</p>
+    <p class="card-text text-white">{{ tweet.textbody_markdown|safe }}</p>
     <div class="mt-1 pb-2 text-muted border-bottom tweet-bottom-info">
         {{ moment(tweet.created_utc).format('LLLL') }}
     </div>

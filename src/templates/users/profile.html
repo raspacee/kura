@@ -46,7 +46,7 @@
 
 {% block maincontent %}
 {% if stickytweets or tweets %}
-  {% for stickytweet in stickytweets %}
+  {% for tweet in stickytweets %}
     {% include "tweets/tweets.html" %}
   {% endfor %}
 

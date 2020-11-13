@@ -188,7 +188,8 @@ class Tweet(SearchableMixin, db.Model):
     __searchable__ = ['textbody']
 
     id = db.Column(db.Integer, primary_key=True)
-    textbody = db.Column(db.String(500), nullable=False)
+    textbody_source = db.Column(db.String(500), nullable=False)
+    textbody_markdown = db.Column(db.Unicode(600), nullable=False)
     userid = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     comments = db.relationship('Comment', backref='tweet', lazy="dynamic")
     created_utc = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
@@ -202,7 +203,7 @@ class Tweet(SearchableMixin, db.Model):
     likes = db.relationship('Like', backref='tweet', lazy='dynamic')
 
     def __repr__(self):
-        return '<Tweet {}>'.format(self.textbody)
+        return '<Tweet {}>'.format(self.id)
 
 class Like(db.Model):
     id = db.Column(db.Integer, primary_key=True)

@@ -4,6 +4,7 @@ from datetime import datetime
 from src import db
 from src.models import User, Tweet, Like, Comment
 from src.tweets.forms import CreateTweetForm, CreateCommentForm
+import markdown2
 
 tweets = Blueprint('tweets', __name__)
 
@@ -13,7 +14,7 @@ def tweet_create():
     form = CreateTweetForm()
     if form.validate_on_submit():
         time = datetime.utcnow()
-        tweet = Tweet(textbody=form.textbody.data, author=current_user, created_utc=time, is_nsfw=form.is_nsfw.data)
+        tweet = Tweet(textbody_source=form.textbody.data, textbody_markdown=markdown2.markdown(form.textbody.data), author=current_user, created_utc=time, is_nsfw=form.is_nsfw.data)
         db.session.add(tweet)
         db.session.commit()
         return redirect(url_for('main.home'))
@@ -34,7 +35,8 @@ def tweet_edit(tweet_id):
         return redirect(url_for('main.home'))
     form = CreateTweetForm()
     if form.validate_on_submit():
-        tweet.textbody = form.textbody.data
+        tweet.textbody_source = form.textbody.data
+        tweet.textbody_markdown = markdown2.markdown(form.textbody.data)
         edited_time = datetime.utcnow()
         tweet.edited_utc = edited_time
         tweet.is_edited = True
@@ -42,7 +44,7 @@ def tweet_edit(tweet_id):
         db.session.commit()
         return redirect(url_for('main.home'))
     elif request.method == 'GET':
-        form.textbody.data = tweet.textbody
+        form.textbody.data = tweet.textbody_source
         form.is_nsfw.data = tweet.is_nsfw
     return render_template('tweets/tweet_create.html', form=form, is_editing=True)
 
