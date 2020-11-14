@@ -10,9 +10,9 @@ TODO
 
 ## Installation
 
-###[Linux](https://github.com/volatileColors/kura/wiki/linux-installation)
-###[Windows](https://github.com/volatileColors/kura/wiki/windows-installation)
-###[Mac](https://github.com/volatileColors/kura/wiki/mac-installation)
+### [Linux](https://github.com/volatileColors/kura/wiki/linux-installation)
+### [Windows](https://github.com/volatileColors/kura/wiki/windows-installation)
+### [Mac](https://github.com/volatileColors/kura/wiki/mac-installation)
 
 ## Contributing
 

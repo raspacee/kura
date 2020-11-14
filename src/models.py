@@ -189,7 +189,7 @@ class Tweet(SearchableMixin, db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     textbody_source = db.Column(db.String(500), nullable=False)
-    textbody_markdown = db.Column(db.Unicode(600), nullable=False)
+    textbody_markdown = db.Column(db.String(600), nullable=False)
     userid = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     comments = db.relationship('Comment', backref='tweet', lazy="dynamic")
     created_utc = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)

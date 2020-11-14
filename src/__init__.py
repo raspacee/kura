@@ -23,7 +23,7 @@ def create_app(config_class=Config):
     app.config.from_object(config_class)
 
     app.redis = Redis.from_url(app.config['REDIS_URL'])
-    app.task_queue = rq.Queue('twittard-tasks', connection=app.redis)
+    app.task_queue = rq.Queue('kura-tasks', connection=app.redis)
 
     app.elasticsearch = Elasticsearch([app.config['ELASTICSEARCH_URL']]) \
                         if app.config['ELASTICSEARCH_URL'] else None
