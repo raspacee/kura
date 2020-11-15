@@ -5,6 +5,7 @@ from src import db
 from src.models import User, Tweet, Like, Comment
 from src.tweets.forms import CreateTweetForm, CreateCommentForm
 import markdown2
+import bleach
 
 tweets = Blueprint('tweets', __name__)
 
@@ -14,7 +15,9 @@ def tweet_create():
     form = CreateTweetForm()
     if form.validate_on_submit():
         time = datetime.utcnow()
-        tweet = Tweet(textbody_source=form.textbody.data, textbody_markdown=markdown2.markdown(form.textbody.data), author=current_user, created_utc=time, is_nsfw=form.is_nsfw.data)
+        markdown = markdown2.markdown(form.textbody.data)
+        bleached_markdown = bleach.clean(markdown, tags=['b', 'i', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'abbr', 'acronym', 'p', 'code', 'blockquote', 'table', 'tr', 'td', 'br', 'ol', 'li', 'pre', 'div', 'span', 'em', 'strong', 'cite', 'col', 'colgroup', 'datalist', 'dd', 'dt', 'dl', 'q', 's', 'small', 'sub', 'sup', 'td', 'tbody', 'th', 'thead', 'u'])
+        tweet = Tweet(textbody_source=form.textbody.data, textbody_markdown=bleached_markdown, author=current_user, created_utc=time, is_nsfw=form.is_nsfw.data)
         db.session.add(tweet)
         db.session.commit()
         return redirect(url_for('main.home'))

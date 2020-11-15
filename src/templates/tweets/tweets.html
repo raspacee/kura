@@ -1,6 +1,6 @@
 <div class="card">
   <div class="card-body tweet-card">
-    <img src="/static/profile_pics/{{ tweet.author.image_file }}" class="tweet-profile">
+    <img draggable="false" src="/static/profile_pics/{{ tweet.author.image_file }}" class="tweet-profile">
     <div class="inline-block ml-2">
         <h5 class="card-title text-white font-weight-bold"><a href="{{ url_for('users.user_profile', user_id=tweet.userid) }}" class="profile-link">{{ tweet.author.showname }}</a> <span class="card-subtitle mb-2 text-muted text-secondary font-weight-light">@{{ tweet.author.username }} &middot {{ moment(tweet.created_utc).fromNow() }}
         {% if tweet.is_edited %}

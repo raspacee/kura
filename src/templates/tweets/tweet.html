@@ -7,7 +7,7 @@
 </div>
 <div class="card">
   <div class="card-body tweet-card">
-    <img src="/static/profile_pics/{{ current_user.image_file }}" class="tweet-profile">
+    <img draggable="false" src="/static/profile_pics/{{ current_user.image_file }}" class="tweet-profile">
     <div class="inline-block ml-2">
     <h5 class="card-title text-white font-weight-bold"><a href="{{ url_for('users.user_profile', user_id=tweet.userid) }}" class="profile-link">{{ tweet.author.showname }}</a> <span class="card-subtitle mb-2 text-muted text-secondary font-weight-light">@{{ tweet.author.username }}
     {% if tweet.is_edited %}
@@ -28,7 +28,7 @@
     </h5>
     </div>
     <div class="card-body-text mt-3">
-    <p class="card-text text-white">{{ tweet.textbody_markdown|safe }}</p>
+        <div class="card-text text-white">{{ tweet.textbody_markdown|safe }}</div>
     <div class="mt-1 pb-2 text-muted border-bottom tweet-bottom-info">
         {{ moment(tweet.created_utc).format('LLLL') }}
     </div>
