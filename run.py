@@ -7,6 +7,7 @@ app = create_app()
 def apply_headers(response):
     response.headers['X-Frame-Options'] = 'SAMEORIGIN'
     response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['X-Content-Type-Options'] = 'nosniff'
     return response
 
 @app.shell_context_processor
