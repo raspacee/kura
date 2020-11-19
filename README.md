@@ -2,7 +2,13 @@
 
 **Status:** Currently in development
 
-Kura aims to be a better alternative for twitter. Unlike twitter, Kura doesn't try to enforce a specific political agenda and doesn't censor people.
+Social site for free speech
+
+## Why Kura?
+
+- No algorithm. Posts are shown in order of their posted dates. No algorithm No content manipulation!
+- No in-site image uploading feature(except profile pictures). In my opinion, allowing users to allow images degrade the quality of posts.
+- Doesn't require email address(optional), phone number or driver's license to sign up.
 
 ## Screenshots
 
@@ -21,11 +27,11 @@ This project is freely open to anyone to contribute.
 If you have found a bug/issue or want to request a new feature feel free to open a new issue.
 If you have wrote new code feel free to open a pull request.
 
-## Copyright and License
+## License
 
-TODO
+### [GNU GPL v3.0](https://github.com/volatileColors/kura/blob/master/LICENSE)
 
-## Authors
+## Author
 
 **Bijay Khapung**
 
