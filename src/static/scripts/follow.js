@@ -4,8 +4,8 @@ for (let i = 0; i < followBtnAll.length; i++) {
     followBtnAll[i].addEventListener('click', function(e) {
         e.preventDefault();
         postlocation = '/user/follow';
-        let userid = e.target.dataset.userid;
-        let data = { user_id : userid };
+        let username = e.target.dataset.username;
+        let data = { username : username };
 
         fetch(postlocation, {
           method: 'POST',

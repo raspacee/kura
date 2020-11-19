@@ -9,21 +9,18 @@
   <div class="card-body tweet-card">
     <img draggable="false" src="/static/profile_pics/{{ current_user.image_file }}" class="tweet-profile">
     <div class="inline-block ml-2">
-    <h5 class="card-title text-white font-weight-bold"><a href="{{ url_for('users.user_profile', user_id=tweet.userid) }}" class="profile-link">{{ tweet.author.showname }}</a> <span class="card-subtitle mb-2 text-muted text-secondary font-weight-light">@{{ tweet.author.username }}
+    <h5 class="card-title text-white font-weight-bold"><a href="{{ url_for('users.user_profile', username=tweet.author.username) }}" class="profile-link">{{ tweet.author.showname }}</a> <span class="card-subtitle mb-2 text-muted text-secondary font-weight-light">@{{ tweet.author.username }}
     {% if tweet.is_edited %}
     &middot edited
     {% endif %}
     </span>
     {% if current_user.id == tweet.userid %}
-    <a class="btn btn-link" href="{{ url_for('tweets.tweet_edit', tweet_id=tweet.id) }}">Edit</a>
+    <a class="btn btn-link" href="{{ url_for('tweets.tweet_edit', ident=tweet.identifier) }}">Edit</a>
     {% endif %}
     {% if current_user.id == tweet.userid and tweet.stickied %}
-    <input id="sticky-btn" type="submit" class="btn btn-link" data-tweetid="{{ tweet.id }}" value="Unsticky">
+    <input id="sticky-btn" type="submit" class="btn btn-link" data-ident="{{ tweet.identifier }}" value="Unsticky">
     {% elif current_user.id == tweet.userid and not tweet.stickied %}
-    <input id="sticky-btn" type="submit" class="btn btn-link" data-tweetid="{{ tweet.id }}" value="Sticky">
-    {% endif %}
-    {% if current_user.admin_level == 2 or current_user.admin_level == 3 %}
-    <input type="submit" class="btn btn-link" data-tweetid="{{ tweet.id }}" value="Ban">
+    <input id="sticky-btn" type="submit" class="btn btn-link" data-ident="{{ tweet.identifier }}" value="Sticky">
     {% endif %}
     </h5>
     </div>
@@ -41,7 +38,7 @@
 </div>
 
 {% if showCreateComment and current_user.is_authenticated %}
-<textarea  onclick="location.href='{{ tweet.id }}/comment/create'" class="form-control" id="create-comment-textarea" rows="2" placeholder="Create a comment"></textarea>
+<textarea  onclick="location.href='{{ tweet.identifier }}/comment/create'" class="form-control" id="create-comment-textarea" rows="2" placeholder="Create a comment"></textarea>
 {% endif %}
 
 {% for comment in comments %}

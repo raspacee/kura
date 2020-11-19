@@ -17,7 +17,7 @@
       <div class="col p-5">
         {% if current_user.is_authenticated %}
           {% if active_page == "home" %}
-            <a class="btn btn-primary btn-block" href="{{ url_for('users.user_profile', user_id=current_user.id) }}" role="button">My Profile</a>
+            <a class="btn btn-primary btn-block" href="{{ url_for('users.user_profile', username=current_user.username) }}" role="button">My Profile</a>
           {% else %}
             <a class="btn btn-primary btn-block" href="{{ url_for('main.home') }}" role="button">Home</a>
           {% endif %}

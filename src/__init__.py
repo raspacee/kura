@@ -1,5 +1,5 @@
-from flask import Flask, request
-from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, request, abort
+from flask_sqlalchemy import SQLAlchemy, BaseQuery
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_migrate import Migrate
@@ -9,6 +9,13 @@ from src.config import Config
 from redis import Redis
 from elasticsearch import Elasticsearch
 import rq
+
+# class CustomBaseQuery(BaseQuery):
+#     def user_get_or_404(self, ident):
+#         user = self.filter_by(username=ident).first()
+#         if not user:
+#             abort(404)
+#         return user
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()

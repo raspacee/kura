@@ -3,8 +3,8 @@ for (let i = 0; i < likeBtnAll.length; i++) {
     likeBtnAll[i].addEventListener('click', function(e) {
         e.preventDefault();
         postlocation = '/tweet/like';
-        let tweetid = e.target.dataset.tweetid;
-        let data = { tweet_id : tweetid };
+        let ident = e.target.dataset.ident;
+        let data = { ident : ident };
 
         fetch(postlocation, {
           method: 'POST',

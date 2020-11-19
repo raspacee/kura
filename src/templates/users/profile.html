@@ -10,9 +10,9 @@
 
     {% if current_user.is_authenticated and current_user.id != user.id %}
       {% if current_user.is_following(user) %}
-      <input data-userid="{{ user.id }}" type="submit" id="follow-btn" class="btn btn-outline-primary float-right btn-round" value="Unfollow">
+      <input data-username="{{ user.username }}" type="submit" id="follow-btn" class="btn btn-outline-primary float-right btn-round" value="Unfollow">
       {% else %}
-      <input data-userid="{{ user.id }}" type="submit" id="follow-btn" class="btn btn-outline-primary float-right btn-round" value="Follow">
+      <input data-username="{{ user.username }}" type="submit" id="follow-btn" class="btn btn-outline-primary float-right btn-round" value="Follow">
       {% endif %}
     {% endif %}
     </h5>

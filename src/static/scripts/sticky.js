@@ -4,8 +4,8 @@ for (let i = 0; i < stickyBtnAll.length; i++) {
     stickyBtnAll[i].addEventListener('click', function(e){
         e.preventDefault();
         postlocation = '/tweet/sticky';
-        let tweetid = e.target.dataset.tweetid;
-        let data = { tweet_id: tweetid };
+        let ident = e.target.dataset.ident;
+        let data = { ident: ident };
 
         fetch(postlocation, {
           method: 'POST',

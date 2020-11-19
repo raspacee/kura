@@ -3,7 +3,7 @@
       <div class="card-body tweet-card">
         <img src="/static/profile_pics/{{ comment.author.image_file }}" class="tweet-profile">
         <div class="inline-block ml-2">
-        <h5 class="card-title text-white font-weight-bold"><a href="{{ url_for('users.user_profile', user_id=comment.commenter_id) }}" class="profile-link">{{ comment.author.showname }}</a> <span class="card-subtitle mb-2 text-muted text-secondary font-weight-light">@{{ comment.author.username }} &middot {{ moment(comment.created_utc).fromNow() }}
+        <h5 class="card-title text-white font-weight-bold"><a href="{{ url_for('users.user_profile', username=comment.author.username) }}" class="profile-link">{{ comment.author.showname }}</a> <span class="card-subtitle mb-2 text-muted text-secondary font-weight-light">@{{ comment.author.username }} &middot {{ moment(comment.created_utc).fromNow() }}
         </span>
         {% if current_user.id == comment.author.userid %}
         <a class="btn btn-link" href="{{ url_for('tweets.tweet_edit', tweet_id=tweet.id) }}">Edit</a>
@@ -13,14 +13,14 @@
         <div class="card-body-text">
         <p class="card-text text-white">{{ comment.textbody }}</p>
         <div class="mt-1 pb-2 text-muted border-bottom tweet-bottom-info">
-            <a href="{{ url_for('tweets.comment_reply', comment_id=comment.id) }}">
+            <a href="{{ url_for('tweets.comment_reply', ident=comment.identifier) }}">
                 <i class="fas fa-reply" aria-hidden="true"></i>
                 <span class="ml-1 d-none d-md-inline-block">Reply</span>
             </a>
         </div>
         <div>
             {% if comment.replies.all() %}
-            <a href="{{ url_for('tweets.comment_replies', comment_id=comment.id) }}">
+            <a href="{{ url_for('tweets.comment_replies', ident=comment.identifier) }}">
                 <i class="far fa-comment-dots"></i>
                 <span class="ml-1 d-md-inline-block">Show replies</span>
             </a>

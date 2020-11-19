@@ -17,25 +17,25 @@ def tweet_create():
         time = datetime.utcnow()
         markdown = markdown2.markdown(form.textbody.data)
         bleached_markdown = bleach.clean(markdown, tags=['b', 'i', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'abbr', 'acronym', 'p', 'code', 'blockquote', 'table', 'tr', 'td', 'br', 'ol', 'li', 'pre', 'div', 'span', 'em', 'strong', 'cite', 'col', 'colgroup', 'datalist', 'dd', 'dt', 'dl', 'q', 's', 'small', 'sub', 'sup', 'td', 'tbody', 'th', 'thead', 'u'])
-        tweet = Tweet(textbody_source=form.textbody.data, textbody_markdown=bleached_markdown, author=current_user, created_utc=time, is_nsfw=form.is_nsfw.data)
+        tweet = Tweet(identifier=Tweet.get_identifier(), textbody_source=form.textbody.data, textbody_markdown=bleached_markdown, author=current_user, created_utc=time, is_nsfw=form.is_nsfw.data)
         db.session.add(tweet)
         db.session.commit()
         return redirect(url_for('main.home'))
     return render_template('tweets/tweet_create.html', title='Create a tweet', form=form)
 
-@tweets.route("/tweet/<int:tweet_id>")
+@tweets.route("/tweet/<string:ident>")
 @login_required
-def tweet_show(tweet_id):
-    tweet = Tweet.query.filter_by(id=tweet_id).first()
+def tweet_show(ident):
+    tweet = Tweet.query.filter_by(identifier=ident).first_or_404()
     comments = tweet.comments.filter(Comment.parent == None).all()
     return render_template('tweets/tweet.html', tweet=tweet, comments=comments, showCreateComment=True)
 
-@tweets.route("/tweet/<int:tweet_id>/edit", methods=['GET', 'POST'])
+@tweets.route("/tweet/<string:ident>/edit", methods=['GET', 'POST'])
 @login_required
-def tweet_edit(tweet_id):
-    tweet = Tweet.query.filter_by(id=tweet_id).first()
-    if not tweet or current_user.id != tweet.userid:
-        return redirect(url_for('main.home'))
+def tweet_edit(ident):
+    tweet = Tweet.query.filter_by(identifier=ident).first_or_404()
+    if current_user.id != tweet.userid:
+        abort(403)
     form = CreateTweetForm()
     if form.validate_on_submit():
         tweet.textbody_source = form.textbody.data
@@ -57,8 +57,8 @@ def tweet_like():
         response = {"statuscode": -1, "status": "Permission denied"}
         return jsonify(response)
 
-    tweetid = request.json['tweet_id']
-    tweet = Tweet.query.filter_by(id=tweetid).first()
+    tweet_ident = request.json['ident']
+    tweet = Tweet.query.filter_by(identifier=tweet_ident).first()
     if not tweet:
         response = {"statuscode": -1, "status": "Tweet not found"}
     else:
@@ -74,8 +74,12 @@ def tweet_like():
 @tweets.route("/tweet/sticky", methods=['POST'])
 @login_required
 def tweet_sticky():
-    tweet_id = request.json['tweet_id']
-    tweet = Tweet.query.filter_by(id=tweet_id).first()
+    if not current_user.is_authenticated:
+        response = {"statuscode": -1, "status": "Permission denied"}
+        return jsonify(response)
+
+    tweet_ident = request.json['ident']
+    tweet = Tweet.query.filter_by(identifier=tweet_ident).first()
     if tweet.userid == current_user.id:
         tweet.stickied = not tweet.stickied
         db.session.commit()
@@ -87,40 +91,34 @@ def tweet_sticky():
     response = {"statuscode": -1}
     return jsonify(response)
 
-@tweets.route("/tweet/<int:tweet_id>/comment/create", methods=['GET', 'POST'])
+@tweets.route("/tweet/<string:ident>/comment/create", methods=['GET', 'POST'])
 @login_required
-def comment_create(tweet_id):
+def comment_create(ident):
     form = CreateCommentForm()
-    tweet = Tweet.query.filter_by(id=tweet_id).first()
-    if not tweet:
-        return redirect(url_for('main.home'))
+    tweet = Tweet.query.filter_by(identifier=ident).first_or_404()
     if form.validate_on_submit():
-        comment = Comment(textbody=form.textbody.data, tweet=tweet, author=current_user, recipient=tweet.author)
+        comment = Comment(textbody=form.textbody.data, identifier=Comment.get_identifier(), tweet=tweet, author=current_user, recipient=tweet.author)
         comment.save()
         tweet.author.add_notification('unread_notifs_count', tweet.author.new_notifs())
         db.session.commit()
-        return redirect(url_for('tweets.tweet_show', tweet_id=tweet_id))
+        return redirect(url_for('tweets.tweet_show', ident=ident))
     return render_template('tweets/comment_create.html', form=form)
 
-@tweets.route("/comment/<int:comment_id>/replies", methods=['GET'])
+@tweets.route("/comment/<string:ident>/replies", methods=['GET'])
 @login_required
-def comment_replies(comment_id):
-    comment = Comment.query.filter_by(id=comment_id).first()
-    if not comment:
-        return redirect(url_for('main.home'))
+def comment_replies(ident):
+    comment = Comment.query.filter_by(identifier=ident).first_or_404()
     return render_template('tweets/replies.html', comment=comment)
 
-@tweets.route("/comment/<int:comment_id>/reply", methods=['GET', 'POST'])
+@tweets.route("/comment/<string:ident>/reply", methods=['GET', 'POST'])
 @login_required
-def comment_reply(comment_id):
+def comment_reply(ident):
     form = CreateCommentForm()
-    p_comment = Comment.query.filter_by(id=comment_id).first()
-    if not p_comment:
-        return redirect(url_for('main.home'))
+    p_comment = Comment.query.filter_by(identifier=ident).first_or_404()
     if form.validate_on_submit():
-        comment = Comment(textbody=form.textbody.data, tweet=p_comment.tweet, author=current_user, recipient=p_comment.tweet.author, parent=p_comment)
+        comment = Comment(textbody=form.textbody.data, identifier=Comment.get_identifier(), tweet=p_comment.tweet, author=current_user, recipient=p_comment.tweet.author, parent=p_comment)
         comment.save()
         p_comment.author.add_notification('unread_notifs_count', p_comment.author.new_notifs())
         db.session.commit()
-        return redirect(url_for('tweets.tweet_show', tweet_id=p_comment.tweet.id))
+        return redirect(url_for('tweets.comment_replies', ident=p_comment.identifier))
     return render_template('tweets/comment_create.html', form=form, is_reply=True)

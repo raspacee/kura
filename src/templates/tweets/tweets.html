@@ -2,7 +2,7 @@
   <div class="card-body tweet-card">
     <img draggable="false" src="/static/profile_pics/{{ tweet.author.image_file }}" class="tweet-profile">
     <div class="inline-block ml-2">
-        <h5 class="card-title text-white font-weight-bold"><a href="{{ url_for('users.user_profile', user_id=tweet.userid) }}" class="profile-link">{{ tweet.author.showname }}</a> <span class="card-subtitle mb-2 text-muted text-secondary font-weight-light">@{{ tweet.author.username }} &middot {{ moment(tweet.created_utc).fromNow() }}
+        <h5 class="card-title text-white font-weight-bold"><a href="{{ url_for('users.user_profile', username=tweet.author.username) }}" class="profile-link">{{ tweet.author.showname }}</a> <span class="card-subtitle mb-2 text-muted text-secondary font-weight-light">@{{ tweet.author.username }} &middot {{ moment(tweet.created_utc).fromNow() }}
         {% if tweet.is_edited %}
         &middot edited
         {% endif %}
@@ -13,23 +13,23 @@
         </h5>
     </div>
         {% if current_user.id == tweet.userid %}
-        <a class="btn btn-link" href="{{ url_for('tweets.tweet_edit', tweet_id=tweet.id) }}">Edit</a>
+        <a class="btn btn-link" href="{{ url_for('tweets.tweet_edit', ident=tweet.identifier) }}">Edit</a>
         {% endif %}
         {% if current_user.id == tweet.userid and tweet.stickied %}
-        <input id="sticky-btn" type="submit" class="btn btn-link" data-tweetid="{{ tweet.id }}" value="Unsticky"/>
+        <input id="sticky-btn" type="submit" class="btn btn-link" data-ident="{{ tweet.identifier }}" value="Unsticky"/>
         {% elif current_user.id == tweet.userid and not tweet.stickied %}
-        <input id="sticky-btn" type="submit" class="btn btn-link" data-tweetid="{{ tweet.id }}" value="Sticky"/>
+        <input id="sticky-btn" type="submit" class="btn btn-link" data-ident="{{ tweet.identifier }}" value="Sticky"/>
         {% endif %}
-    <div class="card-body-text" onclick="location.href='/tweet/{{ tweet.id }}';">
+    <div class="card-body-text" onclick="location.href='/tweet/{{ tweet.identifier }}';">
         <div class="card-text text-white">{{ tweet.textbody_markdown|safe }}</div>
     </div>
   </div>
   <div class="text-muted mx-auto mb-2">
     {% if current_user.is_authenticated %}
         {% if current_user.has_liked_tweet(tweet) %}
-        <img src="{{ url_for('static', filename='images/liked.svg') }}" data-tweetid="{{ tweet.id }}" id="like-btn" class="tweet-like-emoji">
+        <img src="{{ url_for('static', filename='images/liked.svg') }}" data-ident="{{ tweet.identifier }}" id="like-btn" class="tweet-like-emoji">
         {% else %}
-        <img src="{{ url_for('static', filename='images/unliked.svg') }}" data-tweetid="{{ tweet.id }}" id="like-btn" class="tweet-like-emoji">
+        <img src="{{ url_for('static', filename='images/unliked.svg') }}" data-ident="{{ tweet.identifier }}" id="like-btn" class="tweet-like-emoji">
         {% endif %}
     {% endif %}
     <span id="like-counter">

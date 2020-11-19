@@ -8,6 +8,7 @@ from time import time
 import json
 import redis
 import rq
+import secrets
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -188,6 +189,7 @@ class Tweet(SearchableMixin, db.Model):
     __searchable__ = ['textbody']
 
     id = db.Column(db.Integer, primary_key=True)
+    identifier = db.Column(db.String(32), nullable=False)
     textbody_source = db.Column(db.String(500), nullable=False)
     textbody_markdown = db.Column(db.Text(), nullable=False)
     userid = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
@@ -201,6 +203,13 @@ class Tweet(SearchableMixin, db.Model):
     comment_path_counter = db.Column(db.Integer, default=1, autoincrement=True)
 
     likes = db.relationship('Like', backref='tweet', lazy='dynamic')
+
+    @classmethod
+    def get_identifier(cls):
+        while True:
+            ident = secrets.token_hex(nbytes=16)
+            if not cls.query.filter_by(identifier=ident).first():
+                return ident
 
     def __repr__(self):
         return '<Tweet {}>'.format(self.id)
@@ -217,6 +226,7 @@ class Comment(db.Model):
     _N = 6
 
     id = db.Column(db.Integer, primary_key=True)
+    identifier = db.Column(db.String(64), nullable=False)
     tweet_id = db.Column(db.Integer, db.ForeignKey('tweet.id'), nullable=False)
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False) # author of post
     commenter_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False) # author of comment
@@ -237,6 +247,13 @@ class Comment(db.Model):
 
     def level(self):
         return len(self.path)
+
+    @classmethod
+    def get_identifier(cls):
+        while True:
+            ident = secrets.token_hex(nbytes=32)
+            if not cls.query.filter_by(identifier=ident).first():
+                return ident
 
     def __repr__(self):
         return '<Comment {}>'.format(self.id)

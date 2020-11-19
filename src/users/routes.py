@@ -48,18 +48,18 @@ def logout():
     logout_user()
     return redirect(url_for('users.login'))
 
-@users.route("/user/<int:user_id>/profile")
+@users.route("/user/<string:username>/profile")
 @login_required
-def user_profile(user_id):
-    user = User.query.get_or_404(user_id)
+def user_profile(username):
+    user = User.query.filter_by(username=username).first_or_404()
     page = request.args.get('page', 1, type=int)
     tweets = user.tweets.filter_by(stickied=False).order_by(Tweet.created_utc.desc())
     if current_user.filter_nsfw:
         tweets = tweets.filter_by(is_nsfw=False)
     tweets = tweets.paginate(
         page, current_app.config['TWEETS_PER_PAGE'], False)
-    next_url = url_for('users.user_profile', user_id=user.id, page=tweets.next_num) if tweets.has_next else None
-    prev_url = url_for('users.user_profile', user_id=user.id, page=tweets.prev_num) if tweets.has_prev else None
+    next_url = url_for('users.user_profile', username=username.id, page=tweets.next_num) if tweets.has_next else None
+    prev_url = url_for('users.user_profile', username=username.id, page=tweets.prev_num) if tweets.has_prev else None
     stickytweets = user.tweets.filter_by(stickied=True).order_by(Tweet.created_utc.desc())
     if current_user.filter_nsfw:
         stickytweets = stickytweets.filter_by(is_nsfw=False)
@@ -70,24 +70,23 @@ def user_setting():
     if not current_user.is_authenticated:
         abort(403)
 
-    user = User.query.filter_by(id=current_user.id).first()
     form = UserSettingsForm()
     if form.validate_on_submit():
         if form.picture.data:
-            picture_file = save_picture(form.picture.data, user.image_file)
-            user.image_file = picture_file
-        user.showname = form.showname.data
-        user.email = form.email.data
-        user.bio = form.bio.data
-        user.filter_nsfw = form.filter_nsfw.data
+            picture_file = save_picture(form.picture.data, current_user.image_file)
+            current_user.image_file = picture_file
+        current_user.showname = form.showname.data
+        current_user.email = form.email.data
+        current_user.bio = form.bio.data
+        current_user.filter_nsfw = form.filter_nsfw.data
         db.session.commit()
         return redirect(url_for('main.home'))
     elif request.method == 'GET':
-        form.email.data = user.email
-        form.showname.data = user.showname
-        form.bio.data = user.bio
-        form.filter_nsfw.data = user.filter_nsfw
-    return render_template('users/settings.html', user=user, form=form)
+        form.email.data = current_user.email
+        form.showname.data = current_user.showname
+        form.bio.data = current_user.bio
+        form.filter_nsfw.data = current_user.filter_nsfw
+    return render_template('users/settings.html', user=current_user, form=form)
 
 @users.route("/user/follow", methods=['POST'])
 def user_follow():
@@ -95,8 +94,8 @@ def user_follow():
         response = {"statuscode": -1, "status": "Permission denied"}
         return jsonify(response)
 
-    master_id = request.json['user_id']
-    user = User.query.filter_by(id=master_id).first()
+    master_username = request.json['username']
+    user = User.query.filter_by(username=master_username).first()
     if not user or current_user.id == user.id:
         response = {"statuscode": -1, "status": "User not found or can't follow yourself"}
     else:
@@ -138,7 +137,7 @@ def reset_token(token):
         return redirect(url_for('users.login'))
     return render_template('reset_token.html', form=form)
 
-@users.route('/send_message/<recipient>', methods=['GET', 'POST'])
+@users.route('/send_message/<string:recipient>', methods=['GET', 'POST'])
 @login_required
 def send_message(recipient):
     user = User.query.filter_by(username=recipient).first_or_404()
@@ -149,7 +148,7 @@ def send_message(recipient):
         user.add_notification('unread_message_count', user.new_messages())
         db.session.commit()
         flash('Your message has been sent', 'success')
-        return redirect(url_for('users.user_profile', user_id=user.id))
+        return redirect(url_for('users.user_profile', username=user.username))
     return render_template('users/send_message.html', form=form, recipient=recipient)
 
 @users.route('/messages')

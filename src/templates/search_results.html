@@ -36,7 +36,7 @@
       <div class="card-body">
         <img src="/static/profile_pics/{{ user.image_file }}" class="tweet-profile">
         <div class="inline-block ml-2">
-        <h5 class="card-title text-white font-weight-bold"><a href="{{ url_for('users.user_profile', user_id=user.id) }}" class="profile-link">{{ user.username }}</a> <span class="card-subtitle mb-2 text-muted text-secondary font-weight-light">@{{ user.showname }}
+        <h5 class="card-title text-white font-weight-bold"><a href="{{ url_for('users.user_profile', username=user.username) }}" class="profile-link">{{ user.username }}</a> <span class="card-subtitle mb-2 text-muted text-secondary font-weight-light">@{{ user.showname }}
         </span>
         </h5>
         </div>
