@@ -1,7 +1,5 @@
 # Kura
 
-**Status:** Currently in development
-
 Social site for free speech
 
 ## Why Kura?
